@@ -41,11 +41,12 @@ $ terraform apply
 
 **WARNING:**
 1. This guide works locally with LocalStack and it was tested only with it. If you want to configure for AWS, edit the provider.tf
+2. Running terraform will overwrite the files: ansible/inventory.ini and ansible/playbooks/vars/nginx_main.yml
 
 ## TO-DO
 
 - [ ] Integrate the database configuration from Terraform to Ansible for the Hasura API (0%)
-- [ ] Create: AWS IaC with Terraform (80%)
+- [ ] Create: AWS IaC with Terraform (85%)
 - [ ] Test: AWS with Terraform (0%)
 - [ ] Test: AWS with Ansible (0%)
 - [ ] Create: Azure IaC with Terraform (0%)
