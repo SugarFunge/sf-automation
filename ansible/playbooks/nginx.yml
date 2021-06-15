@@ -1,0 +1,41 @@
+---
+- hosts: localhost
+  become: yes
+  handlers:
+    - name: Main handler file
+      import_tasks: handlers/main.yml
+  tasks:
+    - include_vars: "{{ vars_file }}"
+
+    - name: "apt update"
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: "install nginx"
+      apt:
+        name: ["nginx"]
+        state: latest
+
+    - name: "delete default nginx site"
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: restart nginx
+
+    - name: "config SF nginx files"
+      template:
+        src: sf-nginx-template.j2
+        dest: "{% if client_domain is defined %}/etc/nginx/sites-enabled/{{ item.name }}.{{ client_domain }}{% else %}/etc/nginx/sites-enabled/{{ item.name }}{% endif %}"
+        owner: root
+        group: root
+        mode: '0644'
+      notify: restart nginx
+      with_items: "{{ services }}"
+    
+    - name: "add static folders if needed"
+      file:
+        path: "/var/www/{{ item.name }}/html"
+        state: directory
+      with_items: "{{ services }}"
+      when: item.static is defined

@@ -1,0 +1,6 @@
+---
+services:
+  - { 'name': 'node', , 'ip': '127.0.0.1', 'port': ':9944', 'listen_port': '80'}
+node_user: 'ubuntu'
+repo_dir: '/home/ubuntu/sugarfunge-node'
+repo_url: 'git@github.com:SugarFunge/sugarfunge-node.git'

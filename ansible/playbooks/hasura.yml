@@ -1,0 +1,57 @@
+---
+- hosts: localhost
+  become: yes
+  tasks:
+    - include_vars: "{{ vars_file }}"
+
+    - name: install aptitude using apt
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: yes
+        force_apt_get: yes
+
+    - name: install required system packages
+      apt:
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common', 'python3-pip', 'virtualenv', 'python3-setuptools']
+
+    - name: add docker GPG apt key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: add docker repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
+        state: present
+        update_cache: yes
+
+    - name: update apt and install docker-ce
+      apt: 
+        name: ["docker-ce"]
+        state: latest
+        update_cache: yes
+
+    - name: install docker module for python
+      pip:
+        name: docker
+
+    - name: start Hasura
+      community.docker.docker_container:
+        container_default_behavior: "no_defaults"
+        name: "Hasura"
+        network_mode: "{{ network_mode }}"
+        auto_remove: yes
+        detach: yes
+        image: "{{ hasura_image }}"
+        ports:
+          - "80:8080"
+        env:
+          HASURA_GRAPHQL_DATABASE_URL: "{{ database_url }}"
+          HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+          HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+          HASURA_GRAPHQL_ADMIN_SECRET: "{{ admin_secret }}"
+          HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "guest"

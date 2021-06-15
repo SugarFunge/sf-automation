@@ -1,0 +1,5 @@
+---
+network_mode: host
+hasura_image: "hasura/graphql-engine:v2.0.0-beta.1"
+database_url: "postgres://postgres:postgres@localhost:5432/test"
+admin_secret: "hasurasecret"

@@ -1,0 +1,51 @@
+---
+- hosts: localhost
+  become: yes
+  tasks:
+    - include_vars: "{{ vars_file }}"
+
+    - name: "apt update"
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+    
+    - name: install SugarFunge node prerequisites
+      apt:
+        name:
+          - cmake
+          - pkg-config 
+          - libssl-dev
+          - git
+          - build-essential
+          - clang
+          - libclang-dev 
+          - curl
+        state: present
+
+    - name: install rustup
+      include_role:
+        name: hurricanehrndz.rustup
+      vars:
+        rustup_user: "{{ node_user }}"
+    
+    - name: install/update rustup toolchain and install wasm32-unknown-unknown
+      become: no
+      shell: |
+        rustup default stable
+        rustup update nightly
+        rustup update stable
+        rustup target add wasm32-unknown-unknown --toolchain nightly
+    
+    - name: clone the SugarFunge node repo
+      git:
+        repo: "{{ repo_url }}"
+        version: main
+        dest: "{{ repo_dir }}"
+        accept_hostkey: yes
+      become: no
+
+    - name: install/compile dependencies and start the node in dev mode
+      become: no
+      shell: cargo run --release -- --dev --tmp
+      args:
+        chdir: "{{ repo_dir }}"

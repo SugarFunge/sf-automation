@@ -1,0 +1,87 @@
+---
+- import_playbook: nginx.yml
+- hosts: localhost
+  become: true
+  vars:
+    websocket_url: "ws://localhost:9944"
+  handlers:
+    - name: Main handler file
+      import_tasks: handlers/main.yml
+  tasks:
+    - include_vars: "{{ vars_file }}"
+  
+    - name: "apt update"
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: install nodejs prerequisites
+      apt:
+        name:
+          - apt-transport-https
+          - gcc
+          - g++
+          - make
+        state: present
+
+    - name: add nodejs apt key
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+
+    - name: add nodejs repository
+      apt_repository:
+        repo: deb https://deb.nodesource.com/node_14.x {{ ansible_lsb.codename }} main
+        state: present
+        update_cache: yes
+
+    - name: install nodejs
+      apt:
+        name: nodejs
+        state: present
+
+    - name: install yarn
+      command: "npm install --g yarn"
+
+    - name: remove the apps dir if exists
+      file:
+        path: "{{ item.dir }}"
+        state: absent
+      with_items: "{{ node_apps }}"
+
+    - name: clone the node apps repo
+      git:
+        repo: "{{ item.repo }}"
+        version: main
+        dest: "{{ item.dir }}"
+        accept_hostkey: yes
+      become: no
+      with_items: "{{ node_apps }}"
+
+    - name: install node apps dependencies
+      command: "yarn"
+      args:
+        chdir: "{{ item.dir }}"
+      with_items: "{{ node_apps }}"
+
+    - name: set enviroment variable value if set
+      set_fact:
+        websocket_url: "{{ item.websocket_url }}"
+      when: item.websocket_url is defined
+      with_items: "{{ node_apps }}"
+
+    - name: build the node apps
+      shell: "{{ item.build_cmd }}"
+      args:
+        chdir: "{{ item.dir }}"
+      with_items: "{{ node_apps }}"
+      environment:
+        WS_URL: "{{ websocket_url }}"
+
+    - name: copy build files to nginx
+      synchronize:
+        src: "{{ item.build_dir }}/"
+        dest: "/var/www/{{ item.name }}/html"
+      delegate_to: "{{ inventory_hostname }}"
+      with_items: "{{ node_apps }}"
+      notify: restart nginx

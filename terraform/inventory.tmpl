@@ -1,0 +1,14 @@
+[${nginx.tags["Name"]}]
+${nginx.public_dns} ansible_host=${nginx.private_ip} # ${nginx.id}
+
+[${api.tags["Name"]}]
+${api.private_dns} ansible_host=${api.private_ip} # ${api.id}
+
+[${node_01.tags["Name"]}]
+${node_01.private_dns} ansible_host=${node_01.private_ip} # ${node_01.id}
+
+[${node_02.tags["Name"]}]
+${node_02.private_dns} ansible_host=${node_02.private_ip} # ${node_02.id}
+
+[${ipfs.tags["Name"]}]
+${ipfs.private_dns} ansible_host=${ipfs.private_ip} # ${ipfs.id}
