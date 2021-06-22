@@ -1,8 +1,9 @@
 ---
 - import_playbook: nginx.yml vars_file='nginx_main.yml'
 - import_playbook: nginx.yml vars_file='sf_node.yml'
-- import_playbook: sf_node.yml vars_file='sf_node.yml'
+- import_playbook: rust.yml vars_file='sf_node.yml'
 - import_playbook: nginx.yml vars_file='status_explorer.yml'
 - import_playbook: nodejs.yml vars_file='status_explorer.yml'
 - import_playbook: hasura.yml vars_file='hasura.yml'
+- import_playbook: rust.yml vars_file='sf_api.yml'
 - import_playbook: go_ipfs.yml vars_file='go_ipfs.yml'

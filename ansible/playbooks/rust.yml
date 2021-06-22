@@ -26,7 +26,7 @@
       include_role:
         name: hurricanehrndz.rustup
       vars:
-        rustup_user: "{{ node_user }}"
+        rustup_user: "{{ rust_user }}"
     
     - name: install/update rustup toolchain and install wasm32-unknown-unknown
       become: no
@@ -43,9 +43,3 @@
         dest: "{{ repo_dir }}"
         accept_hostkey: yes
       become: no
-
-    - name: install/compile dependencies and start the node in dev mode
-      become: no
-      shell: cargo run --release -- --dev --tmp
-      args:
-        chdir: "{{ repo_dir }}"

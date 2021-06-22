@@ -1,0 +1,4 @@
+---
+rust_user: 'ubuntu'
+repo_dir: '/home/ubuntu/sf-api'
+repo_url: 'git@github.com:SugarFunge/sf-api.git'
