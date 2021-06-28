@@ -1,4 +1,5 @@
 ---
 rust_user: 'ubuntu'
+rust_bin_dir: '/home/ubuntu/.cargo/bin'
 repo_dir: '/home/ubuntu/sf-api'
 repo_url: 'git@github.com:SugarFunge/sf-api.git'

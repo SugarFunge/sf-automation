@@ -9,7 +9,7 @@
         update_cache: yes
         cache_valid_time: 3600
     
-    - name: install SugarFunge node prerequisites
+    - name: install Rust app prerequisites
       apt:
         name:
           - cmake
@@ -31,10 +31,10 @@
     - name: install/update rustup toolchain and install wasm32-unknown-unknown
       become: no
       shell: |
-        rustup default stable
-        rustup update nightly
-        rustup update stable
-        rustup target add wasm32-unknown-unknown --toolchain nightly
+        {{rust_bin_dir}}/rustup default stable
+        {{rust_bin_dir}}/rustup update nightly
+        {{rust_bin_dir}}/rustup update stable
+        {{rust_bin_dir}}/rustup target add wasm32-unknown-unknown --toolchain nightly
     
     - name: clone the SugarFunge node repo
       git:
