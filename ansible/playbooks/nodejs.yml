@@ -1,9 +1,6 @@
 ---
-- import_playbook: nginx.yml
 - hosts: localhost
   become: true
-  vars:
-    websocket_url: "ws://localhost:9944"
   handlers:
     - name: Main handler file
       import_tasks: handlers/main.yml
@@ -52,7 +49,7 @@
     - name: clone the node apps repo
       git:
         repo: "{{ item.repo }}"
-        version: main
+        version: master
         dest: "{{ item.dir }}"
         accept_hostkey: yes
       become: no
@@ -64,10 +61,21 @@
         chdir: "{{ item.dir }}"
       with_items: "{{ node_apps }}"
 
-    - name: set enviroment variable value if set
-      set_fact:
-        websocket_url: "{{ item.websocket_url }}"
-      when: item.websocket_url is defined
+    - name: remove the old config file if needed
+      file:
+        path: "{{ item.dir }}/{{ item.config_file_dir }}/production.json"
+        state: absent
+      when: item.config_file_dir is defined
+      with_items: "{{ node_apps }}"
+
+    - name: "create a new config file if needed"
+      template:
+        src: sf-node-template.j2
+        dest: "{{ item.dir }}/{{ item.config_file_dir }}/production.json"
+        owner: "{{ vm_user }}"
+        group: "{{ vm_user }}"
+        mode: '0644'
+      when: item.config_file_dir is defined
       with_items: "{{ node_apps }}"
 
     - name: build the node apps
