@@ -1,5 +1,14 @@
 ---
+## Rust
+
 rust_user: 'ubuntu'
 rust_bin_dir: '/home/ubuntu/.cargo/bin'
 repo_dir: '/home/ubuntu/sf-api'
 repo_url: 'git@github.com:SugarFunge/sf-api.git'
+
+## Hasura
+
+network_mode: host
+hasura_image: "hasura/graphql-engine:v2.0.1"
+database_url: "postgres://postgres:postgres@localhost:5432/test"
+admin_secret: "secret"
