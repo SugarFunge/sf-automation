@@ -18,7 +18,8 @@ $ ansible-playbook -i ansible/inventory.ini  ansible/playbooks/main.yml --ask-be
 
 **WARNING:** Running terraform will overwrite the files: ansible/inventory.ini and ansible/playbooks/vars/nginx_main.yml
 
-### LocalStack
+<details>
+<summary>LocalStack</summary>
 
 1. [Install Docker](https://docs.docker.com/get-docker)
 2. Run the LocalStack docker-compose
@@ -33,18 +34,27 @@ resource "aws_key_pair" "sugarfunge_key" {
   public_key = "valid OpenSSH public key here"
 }
 ```
-3. Install the dependencies and apply the Terraform infrastructure.
+3. Install the dependencies, validate and apply the Terraform infrastructure. You will get a prompt to fill the variables needed and accept the plan.
 ```
-$ cd terraform
+$ cd terraform/aws
 $ docker-compose run --rm tf init
+$ docker-compose run --rm tf validate
 $ docker-compose run --rm tf apply
 ```
 6. After Terraform finishes you will see a new inventory.ini in your ansible directory with the IPs from the new EC2 instances. The instances created by LocalStack are only for testing purpouses so you can not interact with them.
 
-### AWS
+</details>
+
+<details>
+<summary>AWS</summary>
 
 1. [Install Docker](https://docs.docker.com/get-docker)
-2. Edit the file provider.tf:
+2. [Install Aws-Vault](https://github.com/99designs/aws-vault) and login to AWS with it
+```
+$ aws-vault add yourprofile
+$ aws-vault exec yourprofile --duration=12h
+```
+3. Edit the file provider.tf:
 ```
 terraform {
   required_providers {
@@ -59,14 +69,31 @@ provider "aws" {
   region = "YOUR-REGION-HERE"
 }
 ```
-3. (Optional) Create an AWS Key Pair for the EC2 instances.
-4. Install the dependencies and apply the Terraform infrastructure to AWS. If your key name is different than **sugarfunge_key**, change that with your AWS Key Pair name.
+4. (Optional) Create an AWS Key Pair for the EC2 instances.
+5. Install the dependencies, validate and apply the Terraform infrastructure to AWS. You will get a prompt to fill the variables needed and accept the plan.
 ```
-$ cd terraform
+$ cd terraform/aws
 $ docker-compose run --rm tf init
-$ docker-compose run --rm tf apply -var="key_name=sugarfunge_key"
+$ docker-compose run --rm tf validate
+$ docker-compose run --rm tf apply
 ```
-6. After Terraform finishes you will see a new inventory.ini in your ansible directory with the IPs from the new EC2 instances.
+7. After Terraform finishes you will see a new inventory.ini in your ansible directory with the IPs from the new EC2 instances.
+</details>
+
+<details>
+<summary>Azure</summary>
+
+**WARNING:** It will use your public key by default to add to the VMs.
+
+1. [Install Docker](https://docs.docker.com/get-docker)
+2. Install the dependencies, validate and apply the Terraform infrastructure to Azure. You will get a prompt to fill the variables needed and accept the plan.
+```
+$ cd terraform/azure
+$ docker-compose run --rm tf init
+$ docker-compose run --rm tf validate
+$ docker-compose run --rm tf apply
+```
+</details>
 
 ## TO-DO
 
@@ -74,8 +101,8 @@ $ docker-compose run --rm tf apply -var="key_name=sugarfunge_key"
 - [ ] Create: AWS IaC with Terraform (90%)
 - [ ] Test: AWS with Terraform (50%)
 - [ ] Test: AWS with Ansible (50%)
-- [ ] Create: Azure IaC with Terraform (0%)
-- [ ] Test: Azure with Terraform (0%)
+- [ ] Create: Azure IaC with Terraform (80%)
+- [ ] Test: Azure with Terraform (50%)
 - [ ] Test: Azure with Ansible (50%)
 - [ ] Create: GCP IaC with Terraform (0%)
 - [ ] Test: GCP with Terraform (0%)
