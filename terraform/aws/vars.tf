@@ -1,4 +1,7 @@
 variable "key_name" {
   type    = string
-  default = "sugarfunge_key"
+}
+
+variable "prefix" {
+  type = string
 }

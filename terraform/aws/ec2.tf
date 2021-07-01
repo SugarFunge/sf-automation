@@ -39,7 +39,7 @@ resource "aws_security_group" "sf-sg-public-01" {
   }
 
   tags = {
-    Name = "sf-sg-public-01"
+    Name = "${var.prefix}-sg-public-01"
   }
 }
 
@@ -67,7 +67,7 @@ resource "aws_security_group" "sf-sg-private-01" {
   }
 
   tags = {
-    Name = "sf-sg-private-01"
+    Name = "${var.prefix}-sg-private-01"
   }
 }
 
@@ -80,7 +80,7 @@ resource "aws_instance" "sf-api-01" {
   security_groups = [aws_security_group.sf-sg-private-01.id]
 
   tags = {
-    Name = "sf-api-01"
+    Name = "${var.prefix}-api-01"
   }
 }
 
@@ -93,7 +93,7 @@ resource "aws_instance" "sf-node-01" {
   security_groups = [aws_security_group.sf-sg-private-01.id]
 
   tags = {
-    Name = "sf-node-01"
+    Name = "${var.prefix}-node-01"
   }
 }
 
@@ -106,7 +106,7 @@ resource "aws_instance" "sf-node-02" {
   security_groups = [aws_security_group.sf-sg-private-01.id]
 
   tags = {
-    Name = "sf-node-02"
+    Name = "${var.prefix}-node-02"
   }
 }
 
@@ -120,7 +120,7 @@ resource "aws_instance" "sf-ipfs-01" {
   security_groups = [aws_security_group.sf-sg-private-01.id]
 
   tags = {
-    Name = "sf-ipfs-01"
+    Name = "${var.prefix}-ipfs-01"
   }
 }
 
@@ -133,12 +133,12 @@ resource "aws_instance" "sf-nginx-01" {
   security_groups = [aws_security_group.sf-sg-public-01.id]
 
   tags = {
-    Name = "sf-nginx-01"
+    Name = "${var.prefix}-nginx-01"
   }
 }
 
 resource "local_file" "AnsibleInventory" {
-  content = templatefile("templates/inventory.tmpl",
+  content = templatefile("../templates/inventory.tmpl",
     {
       nginx   = aws_instance.sf-nginx-01,
       api     = aws_instance.sf-api-01,
@@ -147,11 +147,11 @@ resource "local_file" "AnsibleInventory" {
       ipfs    = aws_instance.sf-ipfs-01,
     }
   )
-  filename = "../ansible/inventory.ini"
+  filename = "../../ansible/inventory.ini"
 }
 
 resource "local_file" "AnsibleNginx" {
-  content = templatefile("templates/nginx_main.tmpl",
+  content = templatefile("../templates/nginx_main.tmpl",
     {
       api     = aws_instance.sf-api-01.private_ip,
       node_01 = aws_instance.sf-node-01.private_ip,
@@ -159,5 +159,5 @@ resource "local_file" "AnsibleNginx" {
       ipfs    = aws_instance.sf-ipfs-01.private_ip,
     }
   )
-  filename = "../ansible/playbooks/vars/nginx_main.yml"
+  filename = "../../ansible/playbooks/vars/nginx_main.yml"
 }
