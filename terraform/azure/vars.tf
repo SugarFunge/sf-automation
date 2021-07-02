@@ -21,3 +21,11 @@ variable "resource_group_name" {
 variable "prefix" {
   type = string
 }
+
+variable "resources" {
+    type = map(object({
+        name        = string
+        version     = number
+        vm_size     = string
+      }))
+}

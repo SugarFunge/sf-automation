@@ -71,92 +71,39 @@ resource "aws_security_group" "sf-sg-private-01" {
   }
 }
 
-resource "aws_instance" "sf-api-01" {
-
+resource "aws_instance" "sf-instances" {
+  for_each        = var.resources
   ami             = "ami-09e67e426f25ce0d7"
-  instance_type   = "t2.micro"
+  instance_type   = each.value.instance_type
   key_name        = var.key_name
-  subnet_id       = aws_subnet.sf-subnet-private-01.id
-  security_groups = [aws_security_group.sf-sg-private-01.id]
+  subnet_id       = each.value.is_public ? aws_subnet.sf-subnet-public-01.id : aws_subnet.sf-subnet-private-01.id
+  security_groups = each.value.is_public ? [aws_security_group.sf-sg-public-01.id] : [aws_security_group.sf-sg-private-01.id]
 
   tags = {
-    Name = "${var.prefix}-api-01"
-  }
-}
-
-resource "aws_instance" "sf-node-01" {
-
-  ami             = "ami-09e67e426f25ce0d7"
-  instance_type   = "t2.micro"
-  key_name        = var.key_name
-  subnet_id       = aws_subnet.sf-subnet-private-01.id
-  security_groups = [aws_security_group.sf-sg-private-01.id]
-
-  tags = {
-    Name = "${var.prefix}-node-01"
-  }
-}
-
-resource "aws_instance" "sf-node-02" {
-
-  ami             = "ami-09e67e426f25ce0d7"
-  instance_type   = "t2.micro"
-  key_name        = var.key_name
-  subnet_id       = aws_subnet.sf-subnet-private-01.id
-  security_groups = [aws_security_group.sf-sg-private-01.id]
-
-  tags = {
-    Name = "${var.prefix}-node-02"
-  }
-}
-
-
-resource "aws_instance" "sf-ipfs-01" {
-
-  ami             = "ami-09e67e426f25ce0d7"
-  instance_type   = "t2.micro"
-  key_name        = var.key_name
-  subnet_id       = aws_subnet.sf-subnet-private-01.id
-  security_groups = [aws_security_group.sf-sg-private-01.id]
-
-  tags = {
-    Name = "${var.prefix}-ipfs-01"
-  }
-}
-
-resource "aws_instance" "sf-nginx-01" {
-
-  ami             = "ami-09e67e426f25ce0d7"
-  instance_type   = "t2.micro"
-  key_name        = var.key_name
-  subnet_id       = aws_subnet.sf-subnet-public-01.id
-  security_groups = [aws_security_group.sf-sg-public-01.id]
-
-  tags = {
-    Name = "${var.prefix}-nginx-01"
+    Name = "${var.prefix}-${each.value.name}-0${each.value.version}"
   }
 }
 
 resource "local_file" "AnsibleInventory" {
-  content = templatefile("../templates/inventory.tmpl",
+  content = templatefile("templates/inventory.tmpl",
     {
-      nginx   = aws_instance.sf-nginx-01,
-      api     = aws_instance.sf-api-01,
-      node_01 = aws_instance.sf-node-01,
-      node_02 = aws_instance.sf-node-02,
-      ipfs    = aws_instance.sf-ipfs-01,
+      nginx   = aws_instance.sf-instances["nginx"],
+      api     = aws_instance.sf-instances["api"],
+      node_01 = aws_instance.sf-instances["node01"],
+      node_02 = aws_instance.sf-instances["node02"],
+      ipfs    = aws_instance.sf-instances["ipfs"],
     }
   )
   filename = "../../ansible/inventory.ini"
 }
 
 resource "local_file" "AnsibleNginx" {
-  content = templatefile("../templates/nginx_main.tmpl",
+  content = templatefile("templates/nginx_main.tmpl",
     {
-      api     = aws_instance.sf-api-01.private_ip,
-      node_01 = aws_instance.sf-node-01.private_ip,
-      node_02 = aws_instance.sf-node-02.private_ip,
-      ipfs    = aws_instance.sf-ipfs-01.private_ip,
+      api     = aws_instance.sf-instances["api"].private_ip,
+      node_01 = aws_instance.sf-instances["node01"].private_ip,
+      node_02 = aws_instance.sf-instances["node02"].private_ip,
+      ipfs    = aws_instance.sf-instances["ipfs"].private_ip,
     }
   )
   filename = "../../ansible/playbooks/vars/nginx_main.yml"

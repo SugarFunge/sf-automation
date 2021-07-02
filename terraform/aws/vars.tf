@@ -5,3 +5,12 @@ variable "key_name" {
 variable "prefix" {
   type = string
 }
+
+variable "resources" {
+    type = map(object({
+        name          = string
+        version       = number
+        instance_type = string
+        is_public     = bool
+      }))
+}

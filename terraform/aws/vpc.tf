@@ -77,11 +77,6 @@ resource "aws_nat_gateway" "sf-natgw-01" {
   }
 }
 
-output "sf-eip-01_ip" {
-  value = aws_eip.sf-eip-01.public_ip
-}
-
-
 resource "aws_route_table" "sf-rt-private-01" {
   vpc_id = aws_vpc.sf-vpc-01.id
 

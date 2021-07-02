@@ -79,14 +79,16 @@ resource "azurerm_network_security_group" "sf-nsg-private-01" {
 
 }
 
-resource "azurerm_public_ip" "sf-nginx-ip-01" {
-  name                = "${var.prefix}-nginx-ip-01"
+resource "azurerm_public_ip" "sf-ips" {
+  for_each            = var.resources
+  name                = "${var.prefix}-${each.value.name}-ip-0${each.value.version}"
   resource_group_name = azurerm_resource_group.sf-group.name
   location            = azurerm_resource_group.sf-group.location
   allocation_method   = "Dynamic"
 }
 
-resource "azurerm_network_interface" "sf-nic-nginx-01" {
+resource "azurerm_network_interface" "sf-nics" {
+  for_each            = var.resources
   name                = "${var.prefix}-nic-public-01"
   location            = azurerm_resource_group.sf-group.location
   resource_group_name = azurerm_resource_group.sf-group.name
@@ -95,111 +97,12 @@ resource "azurerm_network_interface" "sf-nic-nginx-01" {
     name                          = "sf-ipconfig-01"
     subnet_id                     = azurerm_subnet.sf-subnet-01.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.sf-nginx-ip-01.id
+    public_ip_address_id          = azurerm_public_ip.sf-ips[each.key].id
   }
 }
 
-resource "azurerm_network_interface_security_group_association" "sf-nic-nsg-nginx" {
-  network_interface_id      = azurerm_network_interface.sf-nic-nginx-01.id
+resource "azurerm_network_interface_security_group_association" "sf-nic-nsg-assocs" {
+  for_each                  = var.resources
+  network_interface_id      = azurerm_network_interface.sf-nics[each.key].id
   network_security_group_id = azurerm_network_security_group.sf-nsg-public-01.id
-}
-
-resource "azurerm_public_ip" "sf-ipfs-ip-01" {
-  name                = "${var.prefix}-ipfs-ip-01"
-  resource_group_name = azurerm_resource_group.sf-group.name
-  location            = azurerm_resource_group.sf-group.location
-  allocation_method   = "Dynamic"
-}
-
-resource "azurerm_network_interface" "sf-nic-ipfs-01" {
-  name                = "${var.prefix}-nic-ipfs-01"
-  location            = azurerm_resource_group.sf-group.location
-  resource_group_name = azurerm_resource_group.sf-group.name
-
-  ip_configuration {
-    name                          = "sf-ipconfig-01"
-    subnet_id                     = azurerm_subnet.sf-subnet-01.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.sf-ipfs-ip-01.id
-  }
-}
-
-resource "azurerm_network_interface_security_group_association" "sf-nic-nsg-ipfs" {
-  network_interface_id      = azurerm_network_interface.sf-nic-ipfs-01.id
-  network_security_group_id = azurerm_network_security_group.sf-nsg-private-01.id
-}
-
-resource "azurerm_public_ip" "sf-api-ip-01" {
-  name                = "${var.prefix}-api-ip-01"
-  resource_group_name = azurerm_resource_group.sf-group.name
-  location            = azurerm_resource_group.sf-group.location
-  allocation_method   = "Dynamic"
-}
-
-resource "azurerm_network_interface" "sf-nic-api-01" {
-  name                = "${var.prefix}-nic-api-01"
-  location            = azurerm_resource_group.sf-group.location
-  resource_group_name = azurerm_resource_group.sf-group.name
-
-  ip_configuration {
-    name                          = "sf-ipconfig-01"
-    subnet_id                     = azurerm_subnet.sf-subnet-01.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.sf-api-ip-01.id
-  }
-}
-
-resource "azurerm_network_interface_security_group_association" "sf-nic-nsg-api" {
-  network_interface_id      = azurerm_network_interface.sf-nic-api-01.id
-  network_security_group_id = azurerm_network_security_group.sf-nsg-private-01.id
-}
-
-resource "azurerm_public_ip" "sf-node-ip-01" {
-  name                = "${var.prefix}-node-ip-01"
-  resource_group_name = azurerm_resource_group.sf-group.name
-  location            = azurerm_resource_group.sf-group.location
-  allocation_method   = "Dynamic"
-}
-
-resource "azurerm_network_interface" "sf-nic-node-01" {
-  name                = "${var.prefix}-nic-node-01"
-  location            = azurerm_resource_group.sf-group.location
-  resource_group_name = azurerm_resource_group.sf-group.name
-
-  ip_configuration {
-    name                          = "sf-ipconfig-01"
-    subnet_id                     = azurerm_subnet.sf-subnet-01.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.sf-node-ip-01.id
-  }
-}
-
-resource "azurerm_network_interface_security_group_association" "sf-nic-nsg-node-01" {
-  network_interface_id      = azurerm_network_interface.sf-nic-node-01.id
-  network_security_group_id = azurerm_network_security_group.sf-nsg-private-01.id
-}
-
-resource "azurerm_public_ip" "sf-node-ip-02" {
-  name                = "${var.prefix}-node-ip-02"
-  resource_group_name = azurerm_resource_group.sf-group.name
-  location            = azurerm_resource_group.sf-group.location
-  allocation_method   = "Dynamic"
-}
-
-resource "azurerm_network_interface" "sf-nic-node-02" {
-  name                = "${var.prefix}-nic-node-02"
-  location            = azurerm_resource_group.sf-group.location
-  resource_group_name = azurerm_resource_group.sf-group.name
-
-  ip_configuration {
-    name                          = "sf-ipconfig-01"
-    subnet_id                     = azurerm_subnet.sf-subnet-01.id
-    private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.sf-node-ip-02.id
-  }
-}
-
-resource "azurerm_network_interface_security_group_association" "sf-nic-nsg-node-02" {
-  network_interface_id      = azurerm_network_interface.sf-nic-node-02.id
-  network_security_group_id = azurerm_network_security_group.sf-nsg-private-01.id
 }
