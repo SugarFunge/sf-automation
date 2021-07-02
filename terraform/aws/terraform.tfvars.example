@@ -1,0 +1,34 @@
+prefix = "sf"
+key_name = "sugarfunge_key"
+resources = {
+    "nginx" = {
+        name            = "nginx"
+        version         = 1
+        instance_type   = "t2.micro"
+        is_public       = true
+    },
+    "ipfs" = {
+        name            = "ipfs"
+        version         = 1
+        instance_type   = "t2.micro"
+        is_public       = false
+    },
+    "node01" = {
+        name            = "node"
+        version         = 1
+        instance_type   = "t2.micro"
+        is_public       = false
+    },
+    "node02" = {
+        name            = "node"
+        version         = 2
+        instance_type   = "t2.micro"
+        is_public       = false
+    },
+    "api" = {
+        name            = "api"
+        version         = 1
+        instance_type   = "t2.micro"
+        is_public       = false
+    }
+}
