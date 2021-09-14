@@ -9,6 +9,6 @@ repo_url: 'git@github.com:SugarFunge/sf-api.git'
 ## Hasura
 
 network_mode: host
-hasura_image: "hasura/graphql-engine:v2.0.1"
+hasura_image: "hasura/graphql-engine:v2.0.4"
 database_url: "postgres://postgres:postgres@localhost:5432/test"
 admin_secret: "secret"

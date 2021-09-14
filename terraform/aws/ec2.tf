@@ -45,7 +45,7 @@ resource "aws_security_group" "sf-sg-public-01" {
 
 resource "aws_security_group" "sf-sg-private-01" {
   name        = "sf-sg-private-01"
-  description = "SugarFunge public Security Group"
+  description = "SugarFunge private Security Group"
   vpc_id      = aws_vpc.sf-vpc-01.id
 
   ingress {

@@ -66,7 +66,7 @@ resource "aws_eip" "sf-eip-01" {
 
 resource "aws_nat_gateway" "sf-natgw-01" {
   allocation_id = aws_eip.sf-eip-01.id
-  subnet_id     = aws_subnet.sf-subnet-private-01.id
+  subnet_id     = aws_subnet.sf-subnet-public-01.id
 
   depends_on = [
     aws_eip.sf-eip-01
