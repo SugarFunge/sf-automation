@@ -4,7 +4,7 @@
 
 1. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
 2. Config the playbook variables.
-3. Create the inventory file (inventory.ini) and config them in each playbook linked to the main playbook (main.yml). If the file is missing, it will use localhost.
+3. Create the inventory file (inventory.ini or inventory.yml) and config them in each playbook linked to the main playbook (main.yml). If the file is missing, it will use localhost.
 4. Run the main playbook using the inventory file. (--ask-become-pass will ask for the sudo password in order to execute the playbooks without issues)
 ```
 $ ansible-playbook -i ansible/inventory.ini  ansible/playbooks/main.yml --ask-become-pass 
@@ -12,11 +12,11 @@ $ ansible-playbook -i ansible/inventory.ini  ansible/playbooks/main.yml --ask-be
 
 **WARNING:**
 1. It is recommended to run the playbooks individually if you want to test them locally since they're designed to be run in different hosts so the ports and nginx sites configuration might collide.
-2. Compatible with: Ubuntu (focal).
+2. Compatible with: Ubuntu.
 
 ## Terraform
 
-**WARNING:** Running terraform will overwrite the files: ansible/inventory.ini and ansible/playbooks/vars/nginx_main.yml
+**WARNING:** Running terraform will overwrite the files: ansible/inventory.ini
 
 <details>
 <summary>LocalStack</summary>
@@ -94,17 +94,3 @@ $ docker-compose run --rm tf validate
 $ docker-compose run --rm tf apply
 ```
 </details>
-
-## TO-DO
-
-- [ ] Integrate the database configuration from Terraform to Ansible for the Hasura API (0%)
-- [ ] Create: AWS IaC with Terraform (90%)
-- [ ] Test: AWS with Terraform (50%)
-- [ ] Test: AWS with Ansible (50%)
-- [ ] Create: Azure IaC with Terraform (80%)
-- [ ] Test: Azure with Terraform (50%)
-- [ ] Test: Azure with Ansible (50%)
-- [ ] Create: GCP IaC with Terraform (0%)
-- [ ] Test: GCP with Terraform (0%)
-- [ ] Test: GCP with Ansible (0%)
-- [ ] Include more distro support for the Ansible playbooks (0%)

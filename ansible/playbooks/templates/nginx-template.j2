@@ -1,0 +1,49 @@
+server {
+  listen {{ item.listen_port }};
+  listen [::]:{{ item.listen_port }};
+{% if client_domain is defined %}
+  server_name {{ item.name }}.{{ client_domain }};
+{% else %}
+  server_name _;
+{% endif %}
+
+{% if item.body_size is defined %}
+  client_max_body_size {{ item.body_size }}M;
+{% endif %}
+
+{% if item.proxy_timeout is defined %}
+  proxy_read_timeout {{ item.proxy_timeout }};
+  proxy_connect_timeout {{ item.proxy_timeout }};
+  proxy_send_timeout {{ item.proxy_timeout }};
+{% endif %}
+
+  location / {
+    # try_files $uri $uri/ =404;
+    proxy_pass http://{{ item.ip }}:{{ item.port }};
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+
+{% if item.frame_options is defined %}
+    add_header X-Frame-Options "SAMEORIGIN";
+{% endif %}
+    add_header X-Content-Type-Options "nosniff";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header Referrer-Policy "strict-origin-when-cross-origin";
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+    add_header Content-Security-Policy "{{ item.csp_header }}";
+
+{% if item.cookies is defined %}
+    proxy_cookie_path / "/; HTTPOnly; Secure";
+{% endif %}
+
+{% if item.forwarded is defined %}
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+{% endif %}
+
+  }
+}

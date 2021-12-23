@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: all
   become: yes
   handlers:
     - name: Main handler file
@@ -25,7 +25,7 @@
 
     - name: "config SF nginx files"
       template:
-        src: sf-nginx-template.j2
+        src: nginx-template.j2
         dest: "{% if client_domain is defined %}/etc/nginx/sites-enabled/{{ item.name }}.{{ client_domain }}{% else %}/etc/nginx/sites-enabled/{{ item.name }}{% endif %}"
         owner: root
         group: root

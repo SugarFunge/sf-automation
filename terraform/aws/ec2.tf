@@ -87,24 +87,8 @@ resource "aws_instance" "sf-instances" {
 resource "local_file" "AnsibleInventory" {
   content = templatefile("templates/inventory.tmpl",
     {
-      nginx   = aws_instance.sf-instances["nginx"],
-      api     = aws_instance.sf-instances["api"],
-      node_01 = aws_instance.sf-instances["node01"],
-      node_02 = aws_instance.sf-instances["node02"],
-      ipfs    = aws_instance.sf-instances["ipfs"],
+      dev = aws_instance.sf-instances["dev"],
     }
   )
   filename = "../../ansible/inventory.ini"
-}
-
-resource "local_file" "AnsibleNginx" {
-  content = templatefile("templates/nginx_main.tmpl",
-    {
-      api     = aws_instance.sf-instances["api"].private_ip,
-      node_01 = aws_instance.sf-instances["node01"].private_ip,
-      node_02 = aws_instance.sf-instances["node02"].private_ip,
-      ipfs    = aws_instance.sf-instances["ipfs"].private_ip,
-    }
-  )
-  filename = "../../ansible/playbooks/vars/nginx_main.yml"
 }

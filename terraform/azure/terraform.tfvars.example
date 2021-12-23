@@ -5,28 +5,8 @@ client_secret = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 resource_group_name = "sugarfunge-group"
 prefix = "sf"
 resources = {
-    "nginx" = {
-        name            = "nginx"
-        version         = 1
-        vm_size         = "Standard_B2s"
-    },
-    "ipfs" = {
-        name            = "ipfs"
-        version         = 1
-        vm_size         = "Standard_B2s"
-    },
-    "node01" = {
-        name            = "node"
-        version         = 1
-        vm_size         = "Standard_F8s_v2"
-    },
-    "node02" = {
-        name            = "node"
-        version         = 2
-        vm_size         = "Standard_B2s"
-    },
-    "api" = {
-        name            = "api"
+    "dev" = {
+        name            = "dev"
         version         = 1
         vm_size         = "Standard_B2s"
     }

@@ -1,7 +1,0 @@
----
-services:
-  - { 'name': 'node', 'ip': '127.0.0.1', 'port': ':9944', 'listen_port': '80'}
-rust_user: 'ubuntu'
-rust_bin_dir: '/home/ubuntu/.cargo/bin'
-repo_dir: '/home/ubuntu/sugarfunge-node'
-repo_url: 'git@github.com:SugarFunge/sugarfunge-node.git'
