@@ -1,9 +1,0 @@
----
-client_domain: test.com
-services:
-  - { 'name': 'api' , 'ip': '${api}', 'port': ':8080', 'listen_port': '80'}
-  - { 'name': 'status' , 'ip': '${node_02}', 'port': '', 'listen_port': '80'}
-  - { 'name': 'explorer' , 'ip': '${node_02}', 'port': ':3000', 'listen_port': '80'}
-  - { 'name': 'node' , 'ip': '${node_01}', 'port': '', 'listen_port': '80'}
-  - { 'name': 'ipfs' , 'ip': '${ipfs}', 'port': ':8080', 'listen_port': '80'}
-  - { 'name': 'webui.ipfs' , 'ip': '${ipfs}', 'port': ':5001', 'listen_port': '80'}
