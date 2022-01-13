@@ -5,6 +5,5 @@ resources = {
         name            = "dev"
         version         = 1
         instance_type   = "t2.micro"
-        is_public       = true
     }
 }

@@ -11,6 +11,5 @@ variable "resources" {
         name          = string
         version       = number
         instance_type = string
-        is_public     = bool
       }))
 }
