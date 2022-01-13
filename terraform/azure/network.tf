@@ -57,26 +57,6 @@ resource "azurerm_network_security_group" "sf-nsg-public-01" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
-
-}
-
-resource "azurerm_network_security_group" "sf-nsg-private-01" {
-  name                = "${var.prefix}-nsg-private-01"
-  location            = azurerm_resource_group.sf-group.location
-  resource_group_name = azurerm_resource_group.sf-group.name
-
-  security_rule {
-    name                       = "SSH"
-    priority                   = 300
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "TCP"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
 }
 
 resource "azurerm_public_ip" "sf-ips" {
