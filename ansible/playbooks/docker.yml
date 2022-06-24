@@ -14,7 +14,7 @@
         name: "{{ item }}"
         state: latest
         update_cache: yes
-      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common']
+      loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common' ]
 
     - name: add docker GPG apt key
       apt_key:
@@ -27,8 +27,9 @@
         state: present
         update_cache: yes
 
-    - name: update apt and install docker-ce
+    - name: update apt and install docker and docker-compose
       apt: 
-        name: ["docker-ce"]
+        name: "{{ item }}"
         state: latest
         update_cache: yes
+      loop: [ 'docker-ce', 'docker-compose-plugin' ]

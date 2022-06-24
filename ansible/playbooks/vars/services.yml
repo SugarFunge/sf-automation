@@ -3,67 +3,41 @@ services:
   - { 'name': 'auth' ,
       'ip': '127.0.0.1',
       'port': '8080',
-      'listen_port': '80',
-      'forwarded': 'true',
-      'frame_options': 'true',
-      'csp_header': "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'self'; object-src 'none';"
+      'generic_headers': 'false'
     }
-  - { 'name': 'odoo' ,
-      'ip': '127.0.0.1',
-      'port': '8069',
-      'listen_port': '80',
-      'forwarded': 'true',
-      'cookies': 'true',
-      'csp_header': "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none';",
-      'body_size': '100',
-      'proxy_timeout': '720s'
-    }
-  - { 'name': 'api.node' ,
+  - { 'name': 'api' ,
       'ip': '127.0.0.1',
       'port': '4000',
-      'listen_port': '80',
       'frame_options': 'true',
       'csp_header': "default-src 'none'; frame-ancestors 'none';"
     }
   - { 'name': 'node' ,
       'ip': '127.0.0.1',
       'port': '9944',
-      'listen_port': '80',
       'frame_options': 'true',
       'csp_header': "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none';"
-    }
-  - { 'name': 'api' ,
-      'ip': '127.0.0.1',
-      'port': '8079',
-      'listen_port': '80',
-      'frame_options': 'true',
-      'csp_header': "default-src https: wss: 'unsafe-eval' 'unsafe-inline'; object-src 'none'; img-src 'self' data: https://graphql-engine-cdn.hasura.io;"
     }
   - { 'name': 'status' ,
       'ip': '127.0.0.1',
       'port': '8000',
-      'listen_port': '80',
       'frame_options': 'true',
       'csp_header': "default-src https: wss: 'unsafe-eval' 'unsafe-inline'; object-src 'none'; font-src 'self' data: https://fonts.gstatic.com;"
     }
   - { 'name': 'explorer' ,
       'ip': '127.0.0.1',
       'port': '3000',
-      'listen_port': '80',
       'frame_options': 'true',
       'csp_header': "default-src https: wss: 'unsafe-eval' 'unsafe-inline'; object-src 'none'; img-src 'self' data:; font-src 'self' data: https://fonts.gstatic.com;"
     }
   - { 'name': 'ipfs' ,
       'ip': '127.0.0.1',
       'port': '8001',
-      'listen_port': '80',
       'frame_options': 'true',
       'csp_header': "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none';"
     }
   - { 'name': 'webui.ipfs' ,
       'ip': '127.0.0.1',
       'port': '5001',
-      'listen_port': '80',
       'frame_options': 'true',
       'csp_header': "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none';"
     }

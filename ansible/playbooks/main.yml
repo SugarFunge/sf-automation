@@ -2,4 +2,4 @@
 - import_playbook: nginx.yml
   vars:
     vars_file: 'services.yml'
-- import_playbook: docker.yml'
+- import_playbook: docker.yml
